@@ -1,19 +1,18 @@
 package kotlinrest.com.kotlinrest.model
 
-import com.fasterxml.jackson.annotation.JsonBackReference
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import javax.persistence.*
 import javax.validation.constraints.NotBlank
 
 @Entity
-data class Band (
+data class Gender (
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 
     @get: NotBlank
     val name: String = "",
 
-    @JsonBackReference
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "gender_id")
-    val gender: Gender? = null
+    @JsonManagedReference
+    @OneToMany(mappedBy = "gender", cascade = arrayOf(CascadeType.ALL), fetch = FetchType.EAGER)
+    var bands: List<Band> = emptyList()
 )

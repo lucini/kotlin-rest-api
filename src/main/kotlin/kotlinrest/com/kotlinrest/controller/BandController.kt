@@ -2,6 +2,7 @@ package kotlinrest.com.kotlinrest.controller
 
 import kotlinrest.com.kotlinrest.model.Band
 import kotlinrest.com.kotlinrest.repository.BandRepository
+import kotlinrest.com.kotlinrest.repository.GenderRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -9,14 +10,16 @@ import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api")
-class BandController(private val bandRepository: BandRepository) {
+class BandController(private val bandRepository: BandRepository,
+                     private val genderRepository: GenderRepository) {
 
     @GetMapping("/bands")
-    fun getAllBands(): List<Band> = bandRepository.findAll();
+    fun getAllBands(): List<Band> = bandRepository.findAll()
 
     @PostMapping("/bands")
     fun createNewBand(@Valid @RequestBody band: Band) {
-        bandRepository.save(band);
+        band.gender?.let { genderRepository.save(it) }
+        bandRepository.save(band)
     }
 
     @GetMapping("bands/{id}")
